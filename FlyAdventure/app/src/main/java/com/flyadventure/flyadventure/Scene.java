@@ -9,13 +9,11 @@ import android.view.View;
  */
 public class Scene {
     public Drawable map;
-    public Drawable obstacle;
     public int offset;
     public int max_offset;
 
-    Scene(Drawable map, Drawable obstacle) {
+    Scene(Drawable map) {
         this.map = map;
-        this.obstacle = obstacle;
         offset = 0;
         max_offset = 100;
     }

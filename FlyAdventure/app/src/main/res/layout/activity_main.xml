@@ -6,6 +6,10 @@
     tools:context="com.flyadventure.flyadventure.MainActivity">
 
     <com.flyadventure.flyadventure.GameView
+        android:id="@+id/gameView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <!--<include layout="@layout/game_view" />-->
+
 </RelativeLayout>
