@@ -1,35 +1,73 @@
 package com.flyadventure.flyadventure;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+
+import java.util.List;
 
 /**
  * Created by user on 16/10/12.
  */
 public class Character {
-//    public float Yspeed = 10;
-    public float Xspeed;
-//    public float jumpHeight = 8;
+    public int Xspeed;
+    public int Yspeed;
     public int x;
     public int y;
     public int width;
     public int height;
+    public List<Floor> floorList;
     public Drawable characterDrawable;
 
     Character(Drawable cDrawable) {
         this.characterDrawable = cDrawable;
-        x = 0;
-        y = 10;
-        //characterDrawable.setBounds(x, y, x+width, y+height);
+
+        x = 50;
+        y = 70;
+        width = 8;
+        height = 15;
+        Xspeed = 0;
+        Yspeed = 0;
     }
 
-    public void move() {
-        if (Xspeed > -4) Xspeed -= 2;
-        x += Xspeed;
+    public void setFloorList(List<Floor> floorList) {
+        this.floorList = floorList;
+    }
 
-        if (x <= 0) x = 0;
+    public void fly() {
+        int xStand = 0;
+        for (Floor floor:floorList) {
+            if (floor.xMin <= x && floor.xMin > xStand) {
+                if (y + width >= floor.yMin && y <= floor.yMax)  xStand = floor.xMin;
+            }
+//            Log.d("debug", "" + floor.xMin);
+//            Log.d("debug", "" + x);
+        }
+
+        x += Xspeed;
+        if (Xspeed > -4) Xspeed -= 2;
+
+        if (x < xStand) x = xStand;
     }
 
     public void jump() {
         if (x < 98) Xspeed = 8;
+    }
+
+    public void move() {
+        y += Yspeed;
+
+        // shrink the Yspeed
+        if (Yspeed != 0) {
+            if (Yspeed > 0) Yspeed--;
+            else Yspeed++;
+        }
+    }
+
+    public void right() {
+        Yspeed = 2;
+    }
+
+    public void left() {
+        Yspeed = -2;
     }
 }

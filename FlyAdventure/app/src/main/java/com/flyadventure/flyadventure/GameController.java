@@ -16,9 +16,9 @@ import java.util.List;
  */
 
 public class GameController {
+    private Scene scene;
     private Character character;
     private List<Obstacle> obstacleList;
-    private Scene scene;
     private int width;
     private int height;
 //    private boolean isJump = false;
@@ -32,7 +32,7 @@ public class GameController {
     // update game frame
     public boolean update(Canvas canvas) {
         scene.update();
-        character.move();
+        character.fly();
 
         // clean the obstacle touches the wall
         cleanObstacles();
@@ -41,18 +41,19 @@ public class GameController {
             obs.move();
         }
 
-        // detect whether the obstacle is hitted
-        if (!collisionDetection()) {
-            this.draw(canvas);
-        } else {
-            //end the game
-            Log.d("debug", "detect collision!");
-
-            // fail
-
-
-            this.draw(canvas);
-        }
+//        // detect whether the obstacle is hitted
+//        if (!collisionDetection()) {
+//            this.draw(canvas);
+//        } else {
+//            //end the game
+//            Log.d("debug", "detect collision!");
+//
+//            // fail
+//
+//
+//            this.draw(canvas);
+//        }
+        this.draw(canvas);
 
         return true;
     }
@@ -68,16 +69,16 @@ public class GameController {
 
     // collision detection
     public boolean collisionDetection() {
-        int x1 = character.x * width / 100;
-        int y1 = character.y * height / 100;
-        int w1 = width / 5;
-        int h1 = height / 10;
+        int x1 = character.x;
+        int y1 = character.y;
+        int w1 = character.width;
+        int h1 = character.height;
 
         for (Obstacle obs:this.obstacleList) {
-            int x2 = obs.x * width / 100;
-            int y2 = obs.y * height / 100;
-            int w2 = width / 9;
-            int h2 = height / 9;
+            int x2 = obs.x;
+            int y2 = obs.y;
+            int w2 = obs.width;
+            int h2 = obs.height;
 
             if (x1 >= x2 && x1 >= x2 + w2) {
                 // false
@@ -107,11 +108,11 @@ public class GameController {
 
         for (Obstacle obs:this.obstacleList) {
             Drawable obstacleDrawable = obs.obstacleDrawable;
-            obstacleDrawable.setBounds(obs.x*width/100, obs.y*height/100, obs.x*width/100+width/9, obs.y*height/100 + height/9);
+            obstacleDrawable.setBounds(obs.x * width / 100, obs.y * height / 100, obs.x * width / 100 + width / obs.width, obs.y * height / 100 + height / obs.height);
             obstacleDrawable.draw(canvas);
         }
 
-        characterDrawable.setBounds(character.x*width/100, character.y*height/100, character.x*width/100+width/5, character.y*height/100 + height/10);
+        characterDrawable.setBounds(character.x * width / 100, character.y * height / 100, character.x * width / 100 + width / character.width, character.y * height / 100 + height / character.height);
         characterDrawable.draw(canvas);
     }
 
@@ -120,5 +121,7 @@ public class GameController {
         this.height = height;
     }
 
-
+    public void setFloorList(List<Floor> floorList) {
+        this.character.setFloorList(floorList);
+    }
 }

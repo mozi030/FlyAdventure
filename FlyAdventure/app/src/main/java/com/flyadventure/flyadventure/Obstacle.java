@@ -9,7 +9,7 @@ import java.util.Random;
  */
 
 public class Obstacle {
-    public int speed = -4;
+    public int speed;
     public int x;
     public int y;
     public int height;
@@ -20,9 +20,12 @@ public class Obstacle {
     Obstacle(Drawable cDrawable) {
         this.obstacleDrawable = cDrawable;
         Random random = new Random();
+        speed = -2;
+
         x = random.nextInt(98);
         y = 100;
-//        obstacleDrawable.setBounds(x, y, x+width, y+height);
+        width = 15;
+        height = 18;
     }
 
     public void move() {

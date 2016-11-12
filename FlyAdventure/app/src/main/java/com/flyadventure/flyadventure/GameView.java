@@ -27,6 +27,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameController gameController;
     private Character character;
     private List<Obstacle> obstacleList;
+    private List<Floor> floorList;
     private Scene scene;
 
     public GameView(Context context) {
@@ -51,16 +52,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private void init(AttributeSet attrs, int defStyle) {
         //Resources res = getResources();
         this.obstacleList = new ArrayList<Obstacle>();
+        this.floorList = new ArrayList<Floor>();
 
-        Drawable mapDrawable = ContextCompat.getDrawable(getContext(), R.drawable.map);
+        Drawable mapDrawable = ContextCompat.getDrawable(getContext(), R.drawable.level4map);
         Drawable obstaclesDrawable = ContextCompat.getDrawable(getContext(), R.drawable.obstacle);
-        Drawable characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.character);
+        Drawable characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.running_1);
 
         this.character = new Character(characterDrawable);
         this.scene = new Scene(mapDrawable);
         this.obstacleList.add(new Obstacle(obstaclesDrawable));
 
         this.gameController = new GameController(character, obstacleList, scene);
+
+        // initialize floor list
+        Floor ground_floor = new Floor(2, 2, 0, 100);
+        Floor upper_floor_1 = new Floor(30, 30, 4, 30);
+        Floor upper_floor_2 = new Floor(67, 67, 8, 35);
+        Floor upper_floor_3 = new Floor(57, 57, 65, 88);
+        Floor upper_floor_4 = new Floor(18, 18, 70, 90);
+        this.floorList.add(ground_floor);
+        this.floorList.add(upper_floor_1);
+        this.floorList.add(upper_floor_2);
+        this.floorList.add(upper_floor_3);
+        this.floorList.add(upper_floor_4);
+
+        // set the floor list of the game controller
+        this.gameController.setFloorList(floorList);
 
         Log.i("debug", "msg");
 
@@ -165,7 +182,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
 
                 try {
-                    Thread.sleep(3);
+                    Thread.sleep(30);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
