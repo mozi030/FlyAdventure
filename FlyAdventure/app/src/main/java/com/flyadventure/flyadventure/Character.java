@@ -19,7 +19,7 @@ public class Character {
     public Drawable characterDrawable;
 
     Character(Drawable cDrawable) {
-        this.characterDrawable = cDrawable;
+        setCharacterDrawable(cDrawable);
 
         x = 50;
         y = 70;
@@ -39,8 +39,7 @@ public class Character {
             if (floor.xMin <= x && floor.xMin > xStand) {
                 if (y + width >= floor.yMin && y <= floor.yMax)  xStand = floor.xMin;
             }
-//            Log.d("debug", "" + floor.xMin);
-//            Log.d("debug", "" + x);
+
         }
 
         x += Xspeed;
@@ -69,5 +68,9 @@ public class Character {
 
     public void left() {
         Yspeed = -2;
+    }
+
+    public void setCharacterDrawable(Drawable cDrawable) {
+        this.characterDrawable = cDrawable;
     }
 }

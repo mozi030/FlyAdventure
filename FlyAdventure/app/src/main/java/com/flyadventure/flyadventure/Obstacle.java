@@ -16,20 +16,19 @@ public class Obstacle {
     public int width;
     public Drawable obstacleDrawable;
 
-
     Obstacle(Drawable cDrawable) {
         this.obstacleDrawable = cDrawable;
         Random random = new Random();
         speed = -2;
 
-        x = random.nextInt(98);
-        y = 100;
-        width = 15;
-        height = 18;
+        x = 100;
+        y = random.nextInt(98);
+        width = 13;
+        height = 28;
     }
 
     public void move() {
-        y += speed;
+        x += speed;
     }
 
 }

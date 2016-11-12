@@ -58,13 +58,38 @@ public class MainActivity extends AppCompatActivity {
     class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-
+            if (gameView == null) return true;
+            gameView.getCharacter().jump();
             return true;
         }
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            // define the swipe min velocity and swipe min velocity
+            final float SWIPE_MIN_VELOCITY = 30;
+            final float SWIPE_MIN_DISTANCE = 30;
 
+            float ev1Y = e1.getY();
+            float ev2Y = e2.getY();
+
+            //Get distance of Y (e1) to Y (e2)
+            final float ydistance = Math.abs(ev1Y - ev2Y);
+            //Get velocity of cursor
+            final float yvelocity = Math.abs(velocityY);
+
+            if( (yvelocity > SWIPE_MIN_VELOCITY) && (ydistance > SWIPE_MIN_DISTANCE) )
+            {
+                if(ev1Y > ev2Y) //Switch Left
+                {
+                    gameView.getCharacter().left();
+                }
+                else //Switch Right
+                {
+                    gameView.getCharacter().right();
+                }
+            }
+
+//            return false;
             return true;
         }
 

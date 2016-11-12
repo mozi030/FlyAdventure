@@ -55,7 +55,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         this.floorList = new ArrayList<Floor>();
 
         Drawable mapDrawable = ContextCompat.getDrawable(getContext(), R.drawable.level4map);
-        Drawable obstaclesDrawable = ContextCompat.getDrawable(getContext(), R.drawable.obstacle);
+        Drawable obstaclesDrawable = ContextCompat.getDrawable(getContext(), R.drawable.obstacle_4);
         Drawable characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.running_1);
 
         this.character = new Character(characterDrawable);
@@ -66,10 +66,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         // initialize floor list
         Floor ground_floor = new Floor(2, 2, 0, 100);
-        Floor upper_floor_1 = new Floor(30, 30, 4, 30);
-        Floor upper_floor_2 = new Floor(67, 67, 8, 35);
-        Floor upper_floor_3 = new Floor(57, 57, 65, 88);
-        Floor upper_floor_4 = new Floor(18, 18, 70, 90);
+        Floor upper_floor_1 = new Floor(30, 30, 6, 28);
+        Floor upper_floor_2 = new Floor(67, 67, 8, 30);
+        Floor upper_floor_3 = new Floor(57, 57, 64, 86);
+        Floor upper_floor_4 = new Floor(18, 18, 68, 90);
         this.floorList.add(ground_floor);
         this.floorList.add(upper_floor_1);
         this.floorList.add(upper_floor_2);
@@ -99,13 +99,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void addObstacle() {
-        Drawable obstaclesDrawable = ContextCompat.getDrawable(getContext(), R.drawable.obstacle);
+        Drawable obstaclesDrawable = ContextCompat.getDrawable(getContext(), R.drawable.obstacle_4);
         this.obstacleList.add(new Obstacle(obstaclesDrawable));
     }
 
     public Character getCharacter() {
         return this.character;
     }
+
+//    public void updateCharacter() {
+//        Drawable characterDrawable;
+//        if (this.direction == true) {
+//            characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.running_1);
+//        } else {
+//            characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.running_1_2);
+//        }
+//
+//        this.character.setCharacterDrawable(characterDrawable);
+//    }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
         int paddingLeft = getPaddingLeft();

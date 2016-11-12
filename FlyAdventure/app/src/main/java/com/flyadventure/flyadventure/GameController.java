@@ -21,7 +21,6 @@ public class GameController {
     private List<Obstacle> obstacleList;
     private int width;
     private int height;
-//    private boolean isJump = false;
 
     GameController(Character c, List<Obstacle> oblist, Scene s) {
         this.character = c;
@@ -33,6 +32,10 @@ public class GameController {
     public boolean update(Canvas canvas) {
         scene.update();
         character.fly();
+        character.move();
+
+        // if the direction change, reset the direction
+        // ...
 
         // clean the obstacle touches the wall
         cleanObstacles();
@@ -62,7 +65,7 @@ public class GameController {
     // if the obstacle touches the walls,
     // destory it
     public void cleanObstacles() {
-        if (this.obstacleList.get(0).y == 0) {
+        if (this.obstacleList.get(0).x == 0) {
             this.obstacleList.remove(0);
         }
     }
