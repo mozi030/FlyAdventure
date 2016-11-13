@@ -10,6 +10,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <TextView
+        android:id="@+id/gameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp"
+        android:text="Time: 0 s"
+        android:textSize="40dp"
+        android:textColor="#ff0000"
+        android:rotation="90"
+        android:textAlignment="center"/>
+
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_centerVertical="true" />-->
+
+
     <!--<include layout="@layout/game_view" />-->
 
 </RelativeLayout>

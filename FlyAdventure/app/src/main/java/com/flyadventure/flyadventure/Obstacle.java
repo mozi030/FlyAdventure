@@ -23,8 +23,8 @@ public class Obstacle {
 
         x = 100;
         y = random.nextInt(98);
-        width = 13;
-        height = 28;
+        width = 7;
+        height = 6;
     }
 
     public void move() {

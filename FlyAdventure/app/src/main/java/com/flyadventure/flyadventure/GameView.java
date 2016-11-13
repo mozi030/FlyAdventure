@@ -1,7 +1,9 @@
 package com.flyadventure.flyadventure;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -18,30 +20,20 @@ import java.util.TimerTask;
  */
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private TimerTask task;
-    private Timer timer;
-
     private SurfaceHolder holder;
     private DrawViewThread drawThread;
 
-    private GameController gameController;
-    private Character character;
-    private List<Obstacle> obstacleList;
-    private List<Floor> floorList;
-    private Scene scene;
+    private int width;
+    private int height;
 
     public GameView(Context context) {
         super(context);
         init(null, 0);
-
-        Log.i("GameView", "~");
     }
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs, 0);
-
-        Log.i("GameView", "~");
     }
 
     public GameView(Context context, AttributeSet attrs, int defStyle) {
@@ -49,74 +41,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         init(attrs, defStyle);
     }
 
-    private void init(AttributeSet attrs, int defStyle) {
-        //Resources res = getResources();
-        this.obstacleList = new ArrayList<Obstacle>();
-        this.floorList = new ArrayList<Floor>();
-
-        Drawable mapDrawable = ContextCompat.getDrawable(getContext(), R.drawable.level4map);
-        Drawable obstaclesDrawable = ContextCompat.getDrawable(getContext(), R.drawable.obstacle_4);
-        Drawable characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.running_1);
-
-        this.character = new Character(characterDrawable);
-        this.scene = new Scene(mapDrawable);
-        this.obstacleList.add(new Obstacle(obstaclesDrawable));
-
-        this.gameController = new GameController(character, obstacleList, scene);
-
-        // initialize floor list
-        Floor ground_floor = new Floor(2, 2, 0, 100);
-        Floor upper_floor_1 = new Floor(30, 30, 6, 28);
-        Floor upper_floor_2 = new Floor(67, 67, 8, 30);
-        Floor upper_floor_3 = new Floor(57, 57, 64, 86);
-        Floor upper_floor_4 = new Floor(18, 18, 68, 90);
-        this.floorList.add(ground_floor);
-        this.floorList.add(upper_floor_1);
-        this.floorList.add(upper_floor_2);
-        this.floorList.add(upper_floor_3);
-        this.floorList.add(upper_floor_4);
-
-        // set the floor list of the game controller
-        this.gameController.setFloorList(floorList);
-
-        Log.i("debug", "msg");
-
-        // define a timer to add obstacles periodically
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                addObstacle();
-            }
-        };
-
-        // set the timer
-        timer = new Timer(true);
-        timer.schedule(task, 1500, 1500);
-
-        holder = this.getHolder();
-        holder.addCallback(this);
-        drawThread = new DrawViewThread(this.holder, this.gameController);
-    }
-
-    public void addObstacle() {
-        Drawable obstaclesDrawable = ContextCompat.getDrawable(getContext(), R.drawable.obstacle_4);
-        this.obstacleList.add(new Obstacle(obstaclesDrawable));
-    }
-
-    public Character getCharacter() {
-        return this.character;
-    }
-
-//    public void updateCharacter() {
-//        Drawable characterDrawable;
-//        if (this.direction == true) {
-//            characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.running_1);
-//        } else {
-//            characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.running_1_2);
-//        }
-//
-//        this.character.setCharacterDrawable(characterDrawable);
-//    }
+    private void init(AttributeSet attrs, int defStyle) {}
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
         int paddingLeft = getPaddingLeft();
@@ -124,10 +49,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         int paddingRight = getPaddingRight();
         int paddingBottom = getPaddingBottom();
 
-        int contentWidth = width - paddingLeft - paddingRight;
-        int contentHeight = height - paddingTop - paddingBottom;
-
-        gameController.setGameSize(contentWidth, contentHeight);
+        this.width = width - paddingLeft - paddingRight;
+        this.height = height - paddingTop - paddingBottom;
     }
 
     public void surfaceCreated(SurfaceHolder holder){
@@ -136,16 +59,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         int paddingRight = getPaddingRight();
         int paddingBottom = getPaddingBottom();
         
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
-        gameController.setGameSize(contentWidth, contentHeight);
-
-        drawThread.threadIsRunning = true;
-        drawThread.start();
+        this.width = getWidth() - paddingLeft - paddingRight;
+        this.height = getHeight() - paddingTop - paddingBottom;
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
         drawThread.threadIsRunning = false;
+    }
+
+    public void startGame() {
+        holder = this.getHolder();
+        holder.addCallback(this);
+        drawThread = new DrawViewThread(this);
+
+        drawThread.threadIsRunning = true;
+        drawThread.start();
     }
 
     public void stopGame() {
@@ -154,19 +82,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void releaseResources() {
-
-    }
-
-    public class DrawViewThread extends Thread {
+    public static class DrawViewThread extends Thread {
+        private GameView view;
         private SurfaceHolder holder;
-        private GameController gameController;
         boolean threadIsRunning;
 
-        public DrawViewThread(SurfaceHolder holder, GameController controller)
+        public DrawViewThread(GameView view)
         {
-            this.holder = holder;
-            this.gameController = controller;
+            this.view = view;
+            this.holder = view.holder;
             threadIsRunning = true;
         }
 
@@ -182,7 +106,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     canvas = holder.lockCanvas();
 
                     //draw game
-                    gameController.update(canvas);
+                    draw(canvas);
+                    if (view.mGameViewListener != null) {
+                        view.mGameViewListener.OnGameUpdate();
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -199,5 +126,49 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
+
+        public void draw(Canvas canvas) {
+            int width = view.width;
+            int height = view.height;
+
+            Character character = GameController.getInstance().character;
+            List<Obstacle> obstacleList = GameController.getInstance().obstacleList;
+
+            Drawable mapDrawable = GameController.getInstance().scene.map;
+            Bitmap characterBitmap = GameController.getInstance().character.characterBitmap;
+
+            mapDrawable.setBounds(0, 0, view.width, view.height);
+            mapDrawable.draw(canvas);
+
+            float wDiv = width/100;
+            float hDiv = height/100;
+
+            //x, y are all percentage, transform them to real value before setBound
+            for (Obstacle obs:obstacleList) {
+                Drawable obstacleDrawable = obs.obstacleDrawable;
+                obstacleDrawable.setBounds(intMul(obs.x, wDiv), intMul(obs.y, hDiv), intMul(obs.x+obs.width, wDiv), intMul(obs.y+obs.height, hDiv));
+                obstacleDrawable.draw(canvas);
+            }
+
+            canvas.drawBitmap(characterBitmap, null,
+                    new Rect( intMul(character.x, wDiv), intMul(character.y, hDiv),
+                            intMul(character.x+character.width, wDiv), intMul(character.y+character.height, hDiv) )
+                    , null);
+        }
+
+        /* multiply */
+        public int intMul(int a, float b) {
+            return (int)(a*b);
+        }
+    }
+
+    /* Game view listener interface */
+    public interface GameViewListener {
+        public void OnGameUpdate();
+    }
+
+    private GameViewListener mGameViewListener = null;
+    public void setGameViewListener(GameViewListener listener) {
+        mGameViewListener = listener;
     }
 }

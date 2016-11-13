@@ -1,14 +1,24 @@
 package com.flyadventure.flyadventure;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static android.support.v4.app.ActivityCompat.startActivity;
 
 /**
  * Created by user on 16/10/12.
@@ -16,115 +26,157 @@ import java.util.List;
  */
 
 public class GameController {
-    private Scene scene;
-    private Character character;
-    private List<Obstacle> obstacleList;
     private int width;
     private int height;
 
-    GameController(Character c, List<Obstacle> oblist, Scene s) {
-        this.character = c;
-        this.scene = s;
-        this.obstacleList = oblist;
+    GameView gameview;
+
+    public Character character;
+    public List<Obstacle> obstacleList;
+    public List<Floor> floorList;
+    public Scene scene;
+
+    private TimerTask task;
+    private Timer timer;
+
+    Context context;
+
+    private static GameController instance = new GameController();
+
+    public static GameController getInstance(){
+        return instance;
     }
 
-    // update game frame
-    public boolean update(Canvas canvas) {
-        scene.update();
-        character.fly();
-        character.move();
+    public void initGame(Context context) {
+        this.context = context;
+        this.obstacleList = new ArrayList<Obstacle>();
+        this.floorList = new ArrayList<Floor>();
 
-        // if the direction change, reset the direction
-        // ...
+        Drawable mapDrawable = ContextCompat.getDrawable(context, R.drawable.level4map);
+        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_4);
+        //Drawable characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.character_1);
 
-        // clean the obstacle touches the wall
-        cleanObstacles();
+        //use context, inital the drawable in character class
+        this.character = new Character(context);
+        this.scene = new Scene(mapDrawable);
+        this.obstacleList.add(new Obstacle(obstaclesDrawable));
 
-        for (Obstacle obs:this.obstacleList) {
-            obs.move();
-        }
+        // initialize floor list
+        Floor ground_floor = new Floor(2, 2, 0, 100);
+        Floor upper_floor_1 = new Floor(30, 30, 6, 28);
+        Floor upper_floor_2 = new Floor(67, 67, 8, 30);
+        Floor upper_floor_3 = new Floor(57, 57, 64, 86);
+        Floor upper_floor_4 = new Floor(18, 18, 68, 90);
+        this.floorList.add(ground_floor);
+        this.floorList.add(upper_floor_1);
+        this.floorList.add(upper_floor_2);
+        this.floorList.add(upper_floor_3);
+        this.floorList.add(upper_floor_4);
 
-//        // detect whether the obstacle is hitted
-//        if (!collisionDetection()) {
-//            this.draw(canvas);
-//        } else {
-//            //end the game
-//            Log.d("debug", "detect collision!");
-//
-//            // fail
-//
-//
-//            this.draw(canvas);
-//        }
-        this.draw(canvas);
+        // define a timer to add obstacles periodically
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                addObstacle();
+            }
+        };
 
-        return true;
+        // set the timer
+        timer = new Timer(true);
+        timer.schedule(task, 2000, 2000);
+
+        // set the floor list of the game controller
+        character.setFloorList(floorList);
+    }
+
+    public void startGame(GameView view) {
+        gameview = view;
+        view.startGame();
+        gameview.setGameViewListener(new GameViewListener());
+    }
+
+    public void addObstacle() {
+        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_4);
+        this.obstacleList.add(new Obstacle(obstaclesDrawable));
     }
 
     // detect whether the obstacles reach the box,
     // if the obstacle touches the walls,
     // destory it
     public void cleanObstacles() {
-        if (this.obstacleList.get(0).x == 0) {
+        if (this.obstacleList.get(0).x < 0) {
             this.obstacleList.remove(0);
         }
     }
 
     // collision detection
     public boolean collisionDetection() {
-        int x1 = character.x;
-        int y1 = character.y;
-        int w1 = character.width;
-        int h1 = character.height;
+        int x11 = character.x;
+        int y11 = character.y;
+        int x12 = character.x + character.width;
+        int y12 = character.y + character.height;
 
         for (Obstacle obs:this.obstacleList) {
-            int x2 = obs.x;
-            int y2 = obs.y;
-            int w2 = obs.width;
-            int h2 = obs.height;
+            int x21 = obs.x;
+            int y21 = obs.y;
+            int x22 = obs.x + obs.width;
+            int y22 = obs.y + obs.height;
 
-            if (x1 >= x2 && x1 >= x2 + w2) {
-                // false
-            } else if (x1 <= x2 && x1 + w1 <= x2) {
-                // false
-            } else if (y1 >= y2 && y1 >= y2 + h2) {
-                // false
-            } else if (y1 <= y2 && y1 + h1 <= y2) {
-                // false
-            } else {
+            if (x12 < x21 || x11 > x22) {
+                continue;
+            } else if (y12 < y21 || y11 > y22) {
+                continue;
+            } else
                 return true;
-            }
         }
 
         return false;
     }
 
-    //draw game
-    public void draw(Canvas canvas) {
-        Drawable mapDrawable = this.scene.map;
-        Drawable characterDrawable = this.character.characterDrawable;
-
-//        Log.d("debug", "draw");
-        mapDrawable.setBounds(0, 0, width, height);
-        mapDrawable.draw(canvas);
-
-
-        for (Obstacle obs:this.obstacleList) {
-            Drawable obstacleDrawable = obs.obstacleDrawable;
-            obstacleDrawable.setBounds(obs.x * width / 100, obs.y * height / 100, obs.x * width / 100 + width / obs.width, obs.y * height / 100 + height / obs.height);
-            obstacleDrawable.draw(canvas);
-        }
-
-        characterDrawable.setBounds(character.x * width / 100, character.y * height / 100, character.x * width / 100 + width / character.width, character.y * height / 100 + height / character.height);
-        characterDrawable.draw(canvas);
-    }
-
-    public void setGameSize(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
     public void setFloorList(List<Floor> floorList) {
         this.character.setFloorList(floorList);
+    }
+
+    //listen GameView update
+    private class GameViewListener implements GameView.GameViewListener {
+        @Override
+        public void OnGameUpdate() {
+            scene.update();
+            character.update();
+
+            // clean the obstacle touches the wall
+            cleanObstacles();
+
+            for (Obstacle obs:GameController.getInstance().obstacleList) {
+                obs.move();
+            }
+
+            // detect whether the obstacle is hitted
+            if (collisionDetection()) {
+                character.isDead = true;
+                if (mGameControllerListener != null)
+                    mGameControllerListener.OnGameOver();
+            }
+
+            //rebirth character
+            if (character.isDead == true && character.x > 130) {
+                character.isDead = false;
+                character.init();
+
+                if (mGameControllerListener != null)
+                    mGameControllerListener.OnGameRestart();
+            }
+        }
+    }
+
+    /* Game view listener interface */
+    public interface GameControllerListener {
+        public void OnGameOver();
+        public void OnGameRestart();
+    }
+
+    private GameControllerListener mGameControllerListener = null;
+    public void setGameControllerListener(GameControllerListener listener) {
+        mGameControllerListener = listener;
     }
 }
