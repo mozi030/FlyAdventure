@@ -43,7 +43,7 @@ public class GameController {
 
     private static GameController instance = new GameController();
 
-    public static GameController getInstance(){
+    public static GameController getInstance() {
         return instance;
     }
 
@@ -62,11 +62,12 @@ public class GameController {
         this.obstacleList.add(new Obstacle(obstaclesDrawable));
 
         // initialize floor list
-        Floor ground_floor = new Floor(2, 2, 0, 100);
-        Floor upper_floor_1 = new Floor(30, 30, 6, 28);
-        Floor upper_floor_2 = new Floor(67, 67, 8, 30);
-        Floor upper_floor_3 = new Floor(57, 57, 64, 86);
-        Floor upper_floor_4 = new Floor(18, 18, 68, 90);
+        double offset = 3;
+        Floor ground_floor = new Floor(0, 0 + offset, 0, 100);
+        Floor upper_floor_1 = new Floor(30, 30 + offset, 6, 28);
+        Floor upper_floor_2 = new Floor(70, 70 + offset, 8, 30);
+        Floor upper_floor_3 = new Floor(60, 60 + offset, 64, 86);
+        Floor upper_floor_4 = new Floor(18, 18 + offset, 68, 90);
         this.floorList.add(ground_floor);
         this.floorList.add(upper_floor_1);
         this.floorList.add(upper_floor_2);
@@ -104,6 +105,9 @@ public class GameController {
     // if the obstacle touches the walls,
     // destory it
     public void cleanObstacles() {
+        if (this.obstacleList.size() == 0)
+            return;
+
         if (this.obstacleList.get(0).x < 0) {
             this.obstacleList.remove(0);
         }
@@ -111,16 +115,16 @@ public class GameController {
 
     // collision detection
     public boolean collisionDetection() {
-        int x11 = character.x;
-        int y11 = character.y;
-        int x12 = character.x + character.width;
-        int y12 = character.y + character.height;
+        int x11 = character.x + character.width / 4;
+        int y11 = character.y + character.height / 4;
+        int x12 = character.x + character.width * 3 / 4;
+        int y12 = character.y + character.height * 3 / 4;
 
-        for (Obstacle obs:this.obstacleList) {
-            int x21 = obs.x;
-            int y21 = obs.y;
-            int x22 = obs.x + obs.width;
-            int y22 = obs.y + obs.height;
+        for (Obstacle obs : this.obstacleList) {
+            int x21 = obs.x + obs.width / 4;
+            int y21 = obs.y + obs.height / 4;
+            int x22 = obs.x + obs.width * 3 / 4;
+            int y22 = obs.y + obs.height * 3 / 4;
 
             if (x12 < x21 || x11 > x22) {
                 continue;
@@ -147,7 +151,7 @@ public class GameController {
             // clean the obstacle touches the wall
             cleanObstacles();
 
-            for (Obstacle obs:GameController.getInstance().obstacleList) {
+            for (Obstacle obs : GameController.getInstance().obstacleList) {
                 obs.move();
             }
 
@@ -162,9 +166,11 @@ public class GameController {
             if (character.isDead == true && character.x > 130) {
                 character.isDead = false;
                 character.init();
+                obstacleList.clear();
 
-                if (mGameControllerListener != null)
+                if (mGameControllerListener != null) {
                     mGameControllerListener.OnGameRestart();
+                }
             }
         }
     }
@@ -172,10 +178,12 @@ public class GameController {
     /* Game view listener interface */
     public interface GameControllerListener {
         public void OnGameOver();
+
         public void OnGameRestart();
     }
 
     private GameControllerListener mGameControllerListener = null;
+
     public void setGameControllerListener(GameControllerListener listener) {
         mGameControllerListener = listener;
     }

@@ -9,17 +9,18 @@ import java.util.Random;
  */
 
 public class Obstacle {
-    public int speed;
+    //public int speed;
     public int x;
     public int y;
     public int height;
     public int width;
     public Drawable obstacleDrawable;
 
+    static public int speed = -1;
+
     Obstacle(Drawable cDrawable) {
         this.obstacleDrawable = cDrawable;
         Random random = new Random();
-        speed = -2;
 
         x = 100;
         y = random.nextInt(98);
@@ -30,5 +31,7 @@ public class Obstacle {
     public void move() {
         x += speed;
     }
+
+    static public void speedUp() { speed-=1; }
 
 }

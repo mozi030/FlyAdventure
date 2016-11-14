@@ -5,9 +5,9 @@ package com.flyadventure.flyadventure;
  */
 
 public class Floor {
-    int xMin, xMax, yMin, yMax;
+    double xMin, xMax, yMin, yMax;
 
-    Floor(int xMin, int xMax, int yMin, int yMax) {
+    Floor(double xMin, double xMax, double yMin, double yMax) {
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;

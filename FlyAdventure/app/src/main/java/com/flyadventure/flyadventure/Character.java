@@ -24,6 +24,11 @@ public class Character {
     public List<Floor> floorList;
     public Context context;
 
+    final static private int MAX_Y_SPEED = 2;
+    final static private int MAX_X_SPEED = 10;
+    final static private int MIN_X_SPEED = -4;
+    final static private int X_DECAY_STEP = 2; // speed -= step for every update
+
     // character bitmap
     public Bitmap characterBitmap;
     public int bitmapStatus;
@@ -42,8 +47,8 @@ public class Character {
         width = 12;
         height = 7;
         Xspeed = 0;
-        Yspeed = 4;
-        direction = 0;
+        Yspeed = 0;
+        direction = 1;
 
         bitmapStatus = 0;
         isDead = false;
@@ -55,7 +60,7 @@ public class Character {
     }
 
     public void jump() {
-        Xspeed = 8;
+        Xspeed = MAX_X_SPEED;
     }
 
     /* update the positon of character each frame */
@@ -72,7 +77,7 @@ public class Character {
         int xStand = 0;
         for (Floor floor:floorList) {
             if (floor.xMin <= x && floor.xMin > xStand) {
-                if (y + width >= floor.yMin && y <= floor.yMax)  xStand = floor.xMin;
+                if (y + width >= floor.yMin && y <= floor.yMax)  xStand = (int)floor.xMax;
             }
         }
 
@@ -85,7 +90,7 @@ public class Character {
 
         // shrink the Yspeed && Xspeed
         //if (Yspeed > 0) Yspeed--;
-        if (Xspeed > -4) Xspeed -= 2;
+        if (Xspeed > MIN_X_SPEED) Xspeed -= X_DECAY_STEP;
 
         // update bitmap status
         if (Yspeed != 0)
@@ -96,18 +101,24 @@ public class Character {
 
     /* handle move event */
     public void move() {
-        Yspeed = 4;
+        Yspeed = MAX_Y_SPEED;
         //Log.d("debug", "move");
     }
 
     /* handle right event */
     public void right() {
+        if (direction != 1)
+            Yspeed = 0;
+
         direction = 1;
         //Log.d("debug", "right");
     }
 
     /* handle left event */
     public void left() {
+        if (direction != -1)
+            Yspeed = 0;
+
         direction = -1;
         //Log.d("debug", "left");
     }

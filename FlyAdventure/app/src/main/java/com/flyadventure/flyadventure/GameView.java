@@ -128,6 +128,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         public void draw(Canvas canvas) {
+            if (canvas == null)
+                return;
+
             int width = view.width;
             int height = view.height;
 
@@ -137,8 +140,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             Drawable mapDrawable = GameController.getInstance().scene.map;
             Bitmap characterBitmap = GameController.getInstance().character.characterBitmap;
 
-            mapDrawable.setBounds(0, 0, view.width, view.height);
-            mapDrawable.draw(canvas);
+            if (mapDrawable!=null) {
+                mapDrawable.setBounds(0, 0, view.width, view.height);
+                mapDrawable.draw(canvas);
+            }
 
             float wDiv = width/100;
             float hDiv = height/100;
