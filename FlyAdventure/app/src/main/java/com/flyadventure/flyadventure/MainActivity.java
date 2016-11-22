@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         frameLayout = (FrameLayout)findViewById(R.id.framelayout);
-        frameLayout.setOnTouchListener(new MyOnTouchListener());
+        //frameLayout.setOnTouchListener(new MyOnTouchListener());
 
         //text view
         gameTextView = (TextView) findViewById(R.id.gameTextView);
@@ -83,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
         //renew time
         tickTime();
 
-        mVoiceRecorder = VoiceRecorder.getInstance(this);
-        mfccClassifier = MFCCClassifier.getInstance(this);
-        mfccClassifier.setmMFCCClassifier(new MyMFCCClassifier());
+//        mVoiceRecorder = VoiceRecorder.getInstance(this);
+//        mfccClassifier = MFCCClassifier.getInstance(this);
+//        mfccClassifier.setmMFCCClassifier(new MyMFCCClassifier());
     }
 
     @Override
@@ -112,61 +112,58 @@ public class MainActivity extends AppCompatActivity {
         @Override
         /* using this function to do the voice recognition! */
         public boolean onSingleTapUp(MotionEvent e) {
-            ////////
-
-            /////
-//            GameController.getInstance().character.jump();
-
-
+            GameController.getInstance().character.jump();
             return false;
         }
 
+        /*
         public void onLongPress(MotionEvent e) {
-//            GameController.getInstance().character.move();
-//            try {
-//                switch (e.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        Log.d(ConstantValues.debugTag, "ACTION_DOWN");
-//                        mVoiceRecorder.start();
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        Log.d(ConstantValues.debugTag, "ACTION_UP");
-//                        mVoiceRecorder.stop();
-//                        break;
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
+            GameController.getInstance().character.move();
+            try {
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Log.d(ConstantValues.debugTag, "ACTION_DOWN");
+                        mVoiceRecorder.start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        Log.d(ConstantValues.debugTag, "ACTION_UP");
+                        mVoiceRecorder.stop();
+                        break;
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
+        */
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//            // define the swipe min velocity and swipe min velocity
-//            final float SWIPE_MIN_VELOCITY = 10;
-//            final float SWIPE_MIN_DISTANCE = 10;
-//
-//            float ev1Y = e1.getY();
-//            float ev2Y = e2.getY();
-//
-//            //Get distance of Y (e1) to Y (e2)
-//            final float ydistance = Math.abs(ev1Y - ev2Y);
-//            //Get velocity of cursor
-//            final float yvelocity = Math.abs(velocityY);
-//
-//            if( (yvelocity > SWIPE_MIN_VELOCITY) && (ydistance > SWIPE_MIN_DISTANCE) )
-//            {
-//                if(ev1Y > ev2Y) //Switch Left
-//                {
-//                    GameController.getInstance().character.left();
-//                }
-//                else //Switch Right
-//                {
-//                    GameController.getInstance().character.right();
-//                }
-//            }
-//
-//            return true;
-            return false;
+            // define the swipe min velocity and swipe min velocity
+            final float SWIPE_MIN_VELOCITY = 10;
+            final float SWIPE_MIN_DISTANCE = 10;
+
+            float ev1Y = e1.getY();
+            float ev2Y = e2.getY();
+
+            //Get distance of Y (e1) to Y (e2)
+            final float ydistance = Math.abs(ev1Y - ev2Y);
+            //Get velocity of cursor
+            final float yvelocity = Math.abs(velocityY);
+
+            if( (yvelocity > SWIPE_MIN_VELOCITY) && (ydistance > SWIPE_MIN_DISTANCE) )
+            {
+                if(ev1Y > ev2Y) //Switch Left
+                {
+                    GameController.getInstance().character.left();
+                }
+                else //Switch Right
+                {
+                    GameController.getInstance().character.right();
+                }
+                GameController.getInstance().character.move();
+            }
+
+            return true;
         }
 
         @Override
