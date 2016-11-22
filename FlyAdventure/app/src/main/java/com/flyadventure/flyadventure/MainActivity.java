@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 mGestureDetector.onTouchEvent(motionEvent);
                 return true;
             }
+
         });
 
         //renew time
