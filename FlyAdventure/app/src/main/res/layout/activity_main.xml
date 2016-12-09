@@ -14,31 +14,16 @@
         android:id="@+id/gameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-<<<<<<< Updated upstream
-=======
         android:layout_marginLeft="200dp"
->>>>>>> Stashed changes
         android:rotation="90"
         android:text="Time: 0 s"
         android:textSize="40dp"
         android:textColor="#ff0000"
         android:textAlignment="center"
         android:layout_centerVertical="true" />
-<<<<<<< Updated upstream
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/framelayout"></FrameLayout>
-=======
-    <!--android:rotation="90"-->
->>>>>>> Stashed changes
-
-    <!--android:layout_alignParentTop="true"-->
-    <!--android:layout_marginTop="10dp"-->
-        <!--android:layout_centerVertical="true" />-->
-
-
-    <!--<include layout="@layout/game_view" />-->
-
 </RelativeLayout>

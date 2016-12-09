@@ -53,7 +53,7 @@ public class GameController {
         this.floorList = new ArrayList<Floor>();
 
         Drawable mapDrawable = ContextCompat.getDrawable(context, R.drawable.level4map);
-        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_4);
+        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_2);
         //Drawable characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.character_1);
 
         //use context, inital the drawable in character class
@@ -63,6 +63,9 @@ public class GameController {
 
         // initialize floor list
         double offset = 3;
+//        1100,583  0,583
+//
+//        Floor ground_floor = new Floor(1.0*(640 - 583)/640, 1.0*(640 - 583)/640, 1.0 * 0 / 1101, 100);
         Floor ground_floor = new Floor(0, 0 + offset, 0, 100);
         Floor upper_floor_1 = new Floor(30, 30 + offset, 6, 28);
         Floor upper_floor_2 = new Floor(70, 70 + offset, 8, 30);
@@ -97,7 +100,7 @@ public class GameController {
     }
 
     public void addObstacle() {
-        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_4);
+        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_2);
         this.obstacleList.add(new Obstacle(obstaclesDrawable));
     }
 

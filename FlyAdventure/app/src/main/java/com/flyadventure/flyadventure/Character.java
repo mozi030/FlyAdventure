@@ -148,7 +148,7 @@ public class Character {
         }
 
         //flip the bitmap
-        if (direction == -1) {
+        if (direction == 1) {
             Matrix matrix = new Matrix();
             matrix.postScale(1,-1);
             characterBitmap = Bitmap.createBitmap(characterBitmap, 0, 0,
