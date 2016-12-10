@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Debug;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -66,12 +67,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         drawThread.threadIsRunning = false;
     }
 
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        this.startGame();
+    }
+
     public void startGame() {
         holder = this.getHolder();
         holder.addCallback(this);
         drawThread = new DrawViewThread(this);
-
         drawThread.threadIsRunning = true;
+
         drawThread.start();
     }
 
@@ -98,14 +104,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         public void run(){
-            Canvas canvas = null;
+            //drawing canvas
+            Canvas cameraCanvas = null;
+
+            //whole game canvas
+            Bitmap.Config conf = Bitmap.Config.ARGB_4444;
+            Bitmap gameBmp = Bitmap.createBitmap(view.getWidth(), view.getHeight(), conf);
 
             while(threadIsRunning) {
                 try {
-                    canvas = holder.lockCanvas();
+                    cameraCanvas = holder.lockCanvas();
 
                     //draw game
-                    draw(canvas);
+                    draw(gameBmp, cameraCanvas);
                     if (view.mGameViewListener != null) {
                         view.mGameViewListener.OnGameUpdate();
                     }
@@ -114,8 +125,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     e.printStackTrace();
                 }
 
-                if(canvas!= null) {
-                    holder.unlockCanvasAndPost(canvas);
+                if(cameraCanvas!= null) {
+                    holder.unlockCanvasAndPost(cameraCanvas);
                 }
 
                 try {
@@ -126,7 +137,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-        public void draw(Canvas canvas) {
+        public void draw(Bitmap gameBmp, Canvas cameraCanvas) {
+            if (gameBmp == null)
+                return;
+
+            Canvas canvas = new Canvas(gameBmp);
             if (canvas == null)
                 return;
 
@@ -154,9 +169,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 obstacleDrawable.draw(canvas);
             }
 
+            int characterLeft = intMul(character.x, wDiv);
+            int characterTop = intMul(character.y, hDiv);
+            int characterRight = intMul(character.x+character.width, wDiv);
+            int characterBot = intMul(character.y+character.height, hDiv);
             canvas.drawBitmap(characterBitmap, null,
-                    new Rect( intMul(character.x, wDiv), intMul(character.y, hDiv),
-                            intMul(character.x+character.width, wDiv), intMul(character.y+character.height, hDiv) )
+                    new Rect( characterLeft, characterTop, characterRight, characterBot )
+                    , null);
+
+            //performing camera follow
+            int marginX = width/6;
+            int marginY = height/6;
+            int cameraLeft = characterLeft - marginX;
+            if (cameraLeft < 0) cameraLeft = 0;
+
+            int cameraRight = cameraLeft + characterRight - characterLeft + 2*marginX;
+            if (cameraRight >= width) {
+                cameraRight = width-1;
+                cameraLeft = cameraRight - 2*marginX + characterLeft-characterRight;
+            }
+
+            int cameraTop = characterTop - marginY;
+            if (cameraTop < 0) cameraTop = 0;
+
+            int cameraBot = cameraTop + characterBot - characterTop + 2*marginY;
+            if (cameraBot >= height) {
+                cameraBot = height-1;
+                cameraTop = cameraBot - 2*marginY + characterTop-characterBot;
+            }
+
+            cameraCanvas.drawBitmap(gameBmp,
+                    new Rect( cameraLeft, cameraTop, cameraRight, cameraBot),
+                    new Rect( 0, 0, canvas.getWidth(), cameraCanvas.getHeight() )
                     , null);
         }
 

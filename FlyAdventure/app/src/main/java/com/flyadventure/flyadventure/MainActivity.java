@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         //renew time
         tickTime();
 
+        // attempt to use voice recognition, but it's not good
 //        mVoiceRecorder = VoiceRecorder.getInstance(this);
 //        mfccClassifier = MFCCClassifier.getInstance(this);
 //        mfccClassifier.setmMFCCClassifier(new MyMFCCClassifier());
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
 
+        // attempt to use voice recognition, but it's not good
         /*
         public void onLongPress(MotionEvent e) {
             GameController.getInstance().character.move();
@@ -245,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // attempt to use voice recognition, but it's not good
     private class MyMFCCClassifier implements MFCCClassifier.MFCCResultListener {
         @Override
         public void onReceivedMFCCResult(String result) {

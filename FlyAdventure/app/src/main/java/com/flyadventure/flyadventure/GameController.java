@@ -95,7 +95,7 @@ public class GameController {
 
     public void startGame(GameView view) {
         gameview = view;
-        view.startGame();
+        //view.startGame();
         gameview.setGameViewListener(new GameViewListener());
     }
 
