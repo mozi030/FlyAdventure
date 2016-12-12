@@ -42,8 +42,8 @@ public class Character {
     }
 
     public void init() {
-        x = 2;
-        y = 0;
+        x = 10;
+        y = 6;
         width = 12;
         height = 7;
         Xspeed = 0;
@@ -77,7 +77,7 @@ public class Character {
         int xStand = 0;
         for (Floor floor:floorList) {
             if (floor.xMin <= x && floor.xMin > xStand) {
-                if (y + width >= floor.yMin && y <= floor.yMax)  xStand = (int)floor.xMax;
+                if (y + width / 2 >= floor.yMin && y + width / 2 <= floor.yMax)  xStand = (int)floor.xMin;
             }
         }
 
@@ -86,7 +86,7 @@ public class Character {
         if (x < xStand) x = xStand;
         if (x > 110) x = 110;
         if (y < 0) y = 0;
-        if (y > 93) y = 93;
+        if (y > 94) y = 94;
 
         // shrink the Yspeed && Xspeed
         //if (Yspeed > 0) Yspeed--;

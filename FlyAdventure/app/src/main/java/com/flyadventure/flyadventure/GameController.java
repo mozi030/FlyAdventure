@@ -52,8 +52,8 @@ public class GameController {
         this.obstacleList = new ArrayList<Obstacle>();
         this.floorList = new ArrayList<Floor>();
 
-        Drawable mapDrawable = ContextCompat.getDrawable(context, R.drawable.level4map);
-        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_2);
+        Drawable mapDrawable = ContextCompat.getDrawable(context, R.drawable.level2map);
+        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_5);
         //Drawable characterDrawable = ContextCompat.getDrawable(getContext(), R.drawable.character_1);
 
         //use context, inital the drawable in character class
@@ -63,19 +63,17 @@ public class GameController {
 
         // initialize floor list
         double offset = 3;
-//        1100,583  0,583
-//
-//        Floor ground_floor = new Floor(1.0*(640 - 583)/640, 1.0*(640 - 583)/640, 1.0 * 0 / 1101, 100);
-        Floor ground_floor = new Floor(0, 0 + offset, 0, 100);
-        Floor upper_floor_1 = new Floor(30, 30 + offset, 6, 28);
-        Floor upper_floor_2 = new Floor(70, 70 + offset, 8, 30);
-        Floor upper_floor_3 = new Floor(60, 60 + offset, 64, 86);
-        Floor upper_floor_4 = new Floor(18, 18 + offset, 68, 90);
-        this.floorList.add(ground_floor);
-        this.floorList.add(upper_floor_1);
-        this.floorList.add(upper_floor_2);
-        this.floorList.add(upper_floor_3);
-        this.floorList.add(upper_floor_4);
+
+        // Updated floor
+        // double mapWidth = 640;
+        // double mapHeight = 1101;
+        this.floorList.add(new Floor(9, 0 + offset, 0, 100));
+        this.floorList.add(new Floor(23, 0 + offset, 14, 58));
+        this.floorList.add(new Floor(59, 0 + offset, 10, 17));
+        this.floorList.add(new Floor(39, 0 + offset, 24, 32));
+        this.floorList.add(new Floor(16, 0 + offset, 86, 100));
+        this.floorList.add(new Floor(50, 0 + offset, 86, 100));
+        this.floorList.add(new Floor(65, 0 + offset, 94, 98));
 
         // define a timer to add obstacles periodically
         task = new TimerTask() {
@@ -100,7 +98,7 @@ public class GameController {
     }
 
     public void addObstacle() {
-        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_2);
+        Drawable obstaclesDrawable = ContextCompat.getDrawable(context, R.drawable.obstacle_5);
         this.obstacleList.add(new Obstacle(obstaclesDrawable));
     }
 

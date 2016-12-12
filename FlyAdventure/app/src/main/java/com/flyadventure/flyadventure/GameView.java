@@ -177,9 +177,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     new Rect( characterLeft, characterTop, characterRight, characterBot )
                     , null);
 
-            //performing camera follow
-            int marginX = width/6;
-            int marginY = height/6;
+            // performing camera follow
+            int marginX = width/4;
+            int marginY = height/4;
             int cameraLeft = characterLeft - marginX;
             if (cameraLeft < 0) cameraLeft = 0;
 
@@ -197,6 +197,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 cameraBot = height-1;
                 cameraTop = cameraBot - 2*marginY + characterTop-characterBot;
             }
+
+            //debug
+            // cameraLeft=0;
+            // cameraRight=width;
+            // cameraTop=0;
+            // cameraBot=height;
 
             cameraCanvas.drawBitmap(gameBmp,
                     new Rect( cameraLeft, cameraTop, cameraRight, cameraBot),
